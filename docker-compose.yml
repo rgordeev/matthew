@@ -1,0 +1,38 @@
+version: "3.4"
+services:
+
+  mysql:
+    image: mysql:8
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql-db-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysql
+      - MYSQL_USER=mysql
+      - MYSQL_PASSWORD=mysql
+      - MYSQL_DATABASE=mydatabase
+    networks:
+      backend: { aliases: [mysql.backend] }
+
+  minio:
+    image: minio/minio
+    ports:
+      - "9009:9000"
+    volumes:
+      - minio-data:/data
+    environment:
+      MINIO_ACCESS_KEY: minioakey
+      MINIO_SECRET_KEY: minioskey
+    networks:
+      backend: { aliases: [minio.backend] }
+    command: server /data
+
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  mysql-db-data:
+  minio-data:
